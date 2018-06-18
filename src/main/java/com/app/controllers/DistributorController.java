@@ -21,13 +21,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.app.beans.LoginDetails;
 import com.app.entities.Address;
 import com.app.entities.BankAccountDetails;
 import com.app.entities.Company;
+import com.app.entities.Customer;
 import com.app.entities.Distributor;
 import com.app.enums.Gender;
 import com.app.exceptions.ResourceNotFoundException;
 import com.app.repositories.DistributorRepository;
+import com.app.service.DistributorService;
 
 @RestController
 @RequestMapping("/api")
@@ -36,6 +39,9 @@ public class DistributorController {
 
 	@Autowired
 	private DistributorRepository distributorRepository;
+	
+	@Autowired
+	private DistributorService distributorService;
 
 	@GetMapping("/distributors")
 	@ApiOperation(value = "View all distributors")
@@ -68,11 +74,17 @@ public class DistributorController {
 						email));
 	}
 
-	@PostMapping("/distributors")
-	@ApiOperation(value = "Create distributor")
-	public Distributor createDistributor(
-			@Valid @RequestBody Distributor distributor) {
-		return distributorRepository.save(distributor);
+	@PostMapping("/distributors/login")
+	@ApiOperation(value = "Authenticate Distributor by username/email and password")
+	public Distributor authenticate(@Valid @RequestBody LoginDetails loginDetails) {
+		return (Distributor) distributorService.authenticateUser(loginDetails.getUsernameOrEmail(),
+				loginDetails.getPassword());
+	}
+
+	@PostMapping("/distributors/registration")
+	@ApiOperation(value = "Register a Distributor")
+	public Distributor registerUser(@Valid @RequestBody Distributor distributor) {
+		return (Distributor) distributorService.createUser(distributor);
 	}
 
 	@PutMapping("/distributors/{id}")

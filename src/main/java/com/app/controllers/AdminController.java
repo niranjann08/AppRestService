@@ -21,11 +21,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.app.beans.LoginDetails;
 import com.app.entities.Address;
 import com.app.entities.Admin;
 import com.app.enums.Gender;
 import com.app.exceptions.ResourceNotFoundException;
 import com.app.repositories.AdminRepository;
+import com.app.service.AdminService;
 
 @RestController
 @RequestMapping("/api")
@@ -34,6 +36,9 @@ public class AdminController {
 
 	@Autowired
 	private AdminRepository adminRepository;
+	
+	@Autowired
+	private AdminService adminService;
 
 	@GetMapping("/admins")
 	@ApiOperation(value = "View all admins")
@@ -67,10 +72,17 @@ public class AdminController {
 								"email", email));
 	}
 
-	@PostMapping("/admins")
-	@ApiOperation(value = "Create admin")
-	public Admin createAdmin(@Valid @RequestBody Admin admin) {
-		return adminRepository.save(admin);
+	@PostMapping("/admins/login")
+	@ApiOperation(value = "Authenticate Admin by username/email and password")
+	public Admin authenticate(@Valid @RequestBody LoginDetails loginDetails) {
+		return (Admin) adminService.authenticateUser(loginDetails.getUsernameOrEmail(),
+				loginDetails.getPassword());
+	}
+
+	@PostMapping("/admins/registration")
+	@ApiOperation(value = "Register a admin")
+	public Admin registerUser(@Valid @RequestBody Admin admin) {
+		return (Admin) adminService.createUser(admin);
 	}
 
 	@PutMapping("/admins/{id}")

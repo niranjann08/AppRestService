@@ -21,11 +21,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.app.beans.LoginDetails;
 import com.app.entities.Address;
 import com.app.entities.User;
 import com.app.enums.Gender;
 import com.app.exceptions.ResourceNotFoundException;
 import com.app.repositories.UserRepository;
+import com.app.service.UserService;
 
 @RestController
 @RequestMapping("/api")
@@ -34,6 +36,9 @@ public class UserController {
 
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private UserService userService;
 
 	@GetMapping("/users")
 	@ApiOperation(value = "View all users")
@@ -64,10 +69,17 @@ public class UserController {
 				() -> new ResourceNotFoundException("User", "email", email));
 	}
 
-	@PostMapping("/users")
-	@ApiOperation(value = "Create an user")
-	public User createUser(@Valid @RequestBody User user) {
-		return userRepository.saveAndFlush(user);
+	@PostMapping("/users/login")
+	@ApiOperation(value = "Authenticate user by username/email and password")
+	public User authenticate(@Valid @RequestBody LoginDetails loginDetails) {
+		return userService.authenticateUser(loginDetails.getUsernameOrEmail(),
+				loginDetails.getPassword());
+	}
+
+	@PostMapping("/users/registration")
+	@ApiOperation(value = "Register a user")
+	public User registerUser(@Valid @RequestBody User user) {
+		return userService.createUser(user);
 	}
 
 	@PutMapping("/users/{id}")

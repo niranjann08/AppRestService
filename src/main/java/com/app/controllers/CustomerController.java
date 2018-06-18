@@ -21,12 +21,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.app.beans.LoginDetails;
 import com.app.entities.Address;
 import com.app.entities.BankAccountDetails;
 import com.app.entities.Customer;
 import com.app.enums.Gender;
 import com.app.exceptions.ResourceNotFoundException;
 import com.app.repositories.CustomerRepository;
+import com.app.service.CustomerService;
 
 @RestController
 @RequestMapping("/api")
@@ -35,6 +37,9 @@ public class CustomerController {
 
 	@Autowired
 	private CustomerRepository customerRepository;
+	
+	@Autowired
+	private CustomerService customerService;
 
 	@GetMapping("/customers")
 	@ApiOperation(value = "View all customers")
@@ -68,10 +73,17 @@ public class CustomerController {
 								"email", email));
 	}
 
-	@PostMapping("/customers")
-	@ApiOperation(value = "Create customer")
-	public Customer createCustomer(@Valid @RequestBody Customer customer) {
-		return customerRepository.save(customer);
+	@PostMapping("/customers/login")
+	@ApiOperation(value = "Authenticate Customer by username/email and password")
+	public Customer authenticate(@Valid @RequestBody LoginDetails loginDetails) {
+		return (Customer) customerService.authenticateUser(loginDetails.getUsernameOrEmail(),
+				loginDetails.getPassword());
+	}
+
+	@PostMapping("/customers/registration")
+	@ApiOperation(value = "Register a customer")
+	public Customer registerUser(@Valid @RequestBody Customer customer) {
+		return (Customer) customerService.createUser(customer);
 	}
 
 	@PutMapping("/customers/{id}")
