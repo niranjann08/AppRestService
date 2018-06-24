@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @PrimaryKeyJoinColumn(name = "customer")
-public class Customer extends User implements Serializable {
+public class Customer extends AppUser implements Serializable {
 
 	private static final long serialVersionUID = -8309072671259373208L;
 	

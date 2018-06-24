@@ -29,7 +29,7 @@ import com.app.enums.Gender;
 @Data
 @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
-public class User implements Serializable {
+public class AppUser implements Serializable {
 
 	private static final long serialVersionUID = -2503943890839637841L;
 

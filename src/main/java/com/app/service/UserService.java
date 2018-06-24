@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import com.app.entities.User;
+import com.app.entities.AppUser;
 import com.app.exceptions.PasswordEmptyException;
 import com.app.exceptions.UserAlreadyExistException;
 import com.app.repositories.UserRepository;
@@ -43,7 +43,7 @@ public class UserService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String email)
 			throws UsernameNotFoundException {
 
-		User loadedUser = userRepository.findByEmail(email).orElseThrow(
+		AppUser loadedUser = userRepository.findByEmail(email).orElseThrow(
 				() -> new UsernameNotFoundException("This user is not found"));
 
 		return new org.springframework.security.core.userdetails.User(
@@ -51,12 +51,12 @@ public class UserService implements UserDetailsService {
 				getAuthorities(loadedUser));
 	}
 
-	private Collection<GrantedAuthority> getAuthorities(User user) {
+	private Collection<GrantedAuthority> getAuthorities(AppUser user) {
 		List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>(1);
 		return authList;
 	}
 
-	public User createUser(User user) {
+	public AppUser createUser(AppUser user) {
 		if (StringUtils.isEmpty(user.getPassword())) {
 			throw new PasswordEmptyException();
 		}
@@ -69,8 +69,8 @@ public class UserService implements UserDetailsService {
 		return userRepository.save(user);
 	}
 
-	public User authenticateUser(String usernameOrEmail, String rawPassword) {
-		User loadedUser = userRepository.findByUsernameOrEmail(usernameOrEmail)
+	public AppUser authenticateUser(String usernameOrEmail, String rawPassword) {
+		AppUser loadedUser = userRepository.findByUsernameOrEmail(usernameOrEmail)
 				.orElseThrow(
 						() -> new UsernameNotFoundException(
 								"Username or email not found"));

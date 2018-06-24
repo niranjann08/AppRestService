@@ -9,6 +9,7 @@
 ### Installation
 * Download the project - https://github.com/niranjann08/AppRestService (Clone or download -> Download ZIP)
 * Extract the downloaded zip file
+* Update your Database connection details in **src\main\resources\application.properties**
 * On windows, double click on **setup.bat** to start the app. On Linux, execute **setup.sh**
 * Wait for sometime till you get the message Started **Started ServiceApplication in xx.xxx seconds** on the console
 * Once application is running, open url - [http://localhost:8200/swagger-ui.html](http://localhost:8200/swagger-ui.html)

@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @PrimaryKeyJoinColumn(name = "distributor")
-public class Distributor extends User {
+public class Distributor extends AppUser {
 
 	private static final long serialVersionUID = -6864605656807735649L;
 

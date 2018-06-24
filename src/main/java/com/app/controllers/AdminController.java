@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.app.beans.LoginDetails;
 import com.app.entities.Address;
-import com.app.entities.Admin;
+import com.app.entities.AppAdmin;
 import com.app.enums.Gender;
 import com.app.exceptions.ResourceNotFoundException;
 import com.app.repositories.AdminRepository;
@@ -42,20 +42,20 @@ public class AdminController {
 
 	@GetMapping("/admins")
 	@ApiOperation(value = "View all admins")
-	public List<Admin> getAllAdmins() {
+	public List<AppAdmin> getAllAdmins() {
 		return adminRepository.findAll();
 	}
 
 	@GetMapping("/admins/{id}")
 	@ApiOperation(value = "View admin by id")
-	public Admin getAdminById(@PathVariable(value = "id") Long id) {
+	public AppAdmin getAdminById(@PathVariable(value = "id") Long id) {
 		return adminRepository.findById(id).orElseThrow(
 				() -> new ResourceNotFoundException("Admin", "id", id));
 	}
 
 	@GetMapping("/admins/username/{username}")
 	@ApiOperation(value = "View admin by username")
-	public Admin getAdminByUsername(
+	public AppAdmin getAdminByUsername(
 			@PathVariable(value = "username") String username) {
 		return adminRepository.findByUsername(username).orElseThrow(
 				() -> new ResourceNotFoundException("Admin", "username",
@@ -64,7 +64,7 @@ public class AdminController {
 
 	@GetMapping("/admins/email/{email}")
 	@ApiOperation(value = "View admin by email")
-	public Admin getAdminByEmail(
+	public AppAdmin getAdminByEmail(
 			@PathVariable(value = "email") String email) {
 		return adminRepository.findByEmail(email)
 				.orElseThrow(
@@ -74,22 +74,22 @@ public class AdminController {
 
 	@PostMapping("/admins/login")
 	@ApiOperation(value = "Authenticate Admin by username/email and password")
-	public Admin authenticate(@Valid @RequestBody LoginDetails loginDetails) {
-		return (Admin) adminService.authenticateUser(loginDetails.getUsernameOrEmail(),
+	public AppAdmin authenticate(@Valid @RequestBody LoginDetails loginDetails) {
+		return (AppAdmin) adminService.authenticateUser(loginDetails.getUsernameOrEmail(),
 				loginDetails.getPassword());
 	}
 
 	@PostMapping("/admins/registration")
 	@ApiOperation(value = "Register a admin")
-	public Admin registerUser(@Valid @RequestBody Admin admin) {
-		return (Admin) adminService.createUser(admin);
+	public AppAdmin registerUser(@Valid @RequestBody AppAdmin admin) {
+		return (AppAdmin) adminService.createUser(admin);
 	}
 
 	@PutMapping("/admins/{id}")
 	@ApiOperation(value = "Update admin by id")
-	public Admin updateAdmin(@PathVariable(value = "id") Long id,
-			@Valid @RequestBody Admin adminDetails) {
-		Admin admin = adminRepository.findById(id).orElseThrow(
+	public AppAdmin updateAdmin(@PathVariable(value = "id") Long id,
+			@Valid @RequestBody AppAdmin adminDetails) {
+		AppAdmin admin = adminRepository.findById(id).orElseThrow(
 				() -> new ResourceNotFoundException("Admin", "id", id));
 
 		String firstName = adminDetails.getFirstName();
@@ -137,14 +137,14 @@ public class AdminController {
 			}
 		}
 
-		Admin updatedAdmin = adminRepository.save(admin);
+		AppAdmin updatedAdmin = adminRepository.save(admin);
 		return updatedAdmin;
 	}
 
 	@DeleteMapping("/admins/{id}")
 	@ApiOperation(value = "Delete admin by id")
 	public ResponseEntity<?> deleteAdmin(@PathVariable(value = "id") Long id) {
-		Admin admin = adminRepository.findById(id).orElseThrow(
+		AppAdmin admin = adminRepository.findById(id).orElseThrow(
 				() -> new ResourceNotFoundException("Admin", "id", id));
 		adminRepository.delete(admin);
 		return ResponseEntity.ok().build();

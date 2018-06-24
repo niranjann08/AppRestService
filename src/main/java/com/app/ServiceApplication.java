@@ -18,7 +18,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableJpaAuditing
-@ComponentScan("com.app.controllers")
+@ComponentScan({ "com.app.controllers", "com.app.service" })
 @EntityScan("com.app.entities")
 @EnableJpaRepositories("com.app.repositories")
 @EnableSwagger2

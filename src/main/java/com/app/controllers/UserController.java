@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.app.beans.LoginDetails;
 import com.app.entities.Address;
-import com.app.entities.User;
+import com.app.entities.AppUser;
 import com.app.enums.Gender;
 import com.app.exceptions.ResourceNotFoundException;
 import com.app.repositories.UserRepository;
@@ -42,20 +42,20 @@ public class UserController {
 
 	@GetMapping("/users")
 	@ApiOperation(value = "View all users")
-	public List<User> getAllUsers() {
+	public List<AppUser> getAllUsers() {
 		return userRepository.findAll();
 	}
 
 	@GetMapping("/users/{id}")
 	@ApiOperation(value = "View user by id")
-	public User getUserById(@PathVariable(value = "id") Long userId) {
+	public AppUser getUserById(@PathVariable(value = "id") Long userId) {
 		return userRepository.findById(userId).orElseThrow(
 				() -> new ResourceNotFoundException("User", "id", userId));
 	}
 
 	@GetMapping("/users/username/{username}")
 	@ApiOperation(value = "View user by username")
-	public User getUserByUsername(
+	public AppUser getUserByUsername(
 			@PathVariable(value = "username") String username) {
 		return userRepository.findByUsername(username).orElseThrow(
 				() -> new ResourceNotFoundException("User", "username",
@@ -64,29 +64,29 @@ public class UserController {
 
 	@GetMapping("/users/email/{email}")
 	@ApiOperation(value = "View user by email")
-	public User getUserByEmail(@PathVariable(value = "email") String email) {
+	public AppUser getUserByEmail(@PathVariable(value = "email") String email) {
 		return userRepository.findByEmail(email).orElseThrow(
 				() -> new ResourceNotFoundException("User", "email", email));
 	}
 
 	@PostMapping("/users/login")
 	@ApiOperation(value = "Authenticate user by username/email and password")
-	public User authenticate(@Valid @RequestBody LoginDetails loginDetails) {
+	public AppUser authenticate(@Valid @RequestBody LoginDetails loginDetails) {
 		return userService.authenticateUser(loginDetails.getUsernameOrEmail(),
 				loginDetails.getPassword());
 	}
 
 	@PostMapping("/users/registration")
 	@ApiOperation(value = "Register a user")
-	public User registerUser(@Valid @RequestBody User user) {
+	public AppUser registerUser(@Valid @RequestBody AppUser user) {
 		return userService.createUser(user);
 	}
 
 	@PutMapping("/users/{id}")
 	@ApiOperation(value = "Update an user by id")
-	public User updateUser(@PathVariable(value = "id") Long userId,
-			@Valid @RequestBody User userDetails) {
-		User user = userRepository.findById(userId).orElseThrow(
+	public AppUser updateUser(@PathVariable(value = "id") Long userId,
+			@Valid @RequestBody AppUser userDetails) {
+		AppUser user = userRepository.findById(userId).orElseThrow(
 				() -> new ResourceNotFoundException("User", "id", userId));
 
 		String firstName = userDetails.getFirstName();
@@ -134,14 +134,14 @@ public class UserController {
 			}
 		}
 
-		User updatedUser = userRepository.saveAndFlush(user);
+		AppUser updatedUser = userRepository.saveAndFlush(user);
 		return updatedUser;
 	}
 
 	@DeleteMapping("/users/{id}")
 	@ApiOperation(value = "Delete an user by id")
 	public ResponseEntity<?> deleteUser(@PathVariable(value = "id") Long userId) {
-		User user = userRepository.findById(userId).orElseThrow(
+		AppUser user = userRepository.findById(userId).orElseThrow(
 				() -> new ResourceNotFoundException("User", "id", userId));
 		userRepository.delete(user);
 		return ResponseEntity.ok().build();
