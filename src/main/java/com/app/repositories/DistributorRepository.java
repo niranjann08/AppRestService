@@ -9,7 +9,5 @@ import com.app.entities.Distributor;
 
 @Repository
 public interface DistributorRepository extends JpaRepository<Distributor, Long> {
-	public Optional<Distributor> findByUsername(String username);
-
 	public Optional<Distributor> findByEmail(String email);
 }

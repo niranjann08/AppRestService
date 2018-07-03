@@ -39,10 +39,6 @@ public class AppUser implements Serializable {
 	@Column(unique = true, updatable = false, nullable = false)
 	private Long id;
 
-	@Column(unique = true, updatable = false, nullable = false)
-	@NotBlank
-	private String username;
-
 	@Column(nullable = false)
 	@NotBlank
 	private String password;

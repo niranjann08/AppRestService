@@ -69,11 +69,11 @@ public class UserService implements UserDetailsService {
 		return userRepository.save(user);
 	}
 
-	public AppUser authenticateUser(String usernameOrEmail, String rawPassword) {
-		AppUser loadedUser = userRepository.findByUsernameOrEmail(usernameOrEmail)
+	public AppUser authenticateUser(String email, String rawPassword) {
+		AppUser loadedUser = userRepository.findByEmail(email)
 				.orElseThrow(
 						() -> new UsernameNotFoundException(
-								"Username or email not found"));
+								"Email not found"));
 
 		Authentication authToken = new UsernamePasswordAuthenticationToken(
 				loadedUser.getEmail(), rawPassword);

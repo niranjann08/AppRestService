@@ -25,7 +25,6 @@ import com.app.beans.LoginDetails;
 import com.app.entities.Address;
 import com.app.entities.BankAccountDetails;
 import com.app.entities.Company;
-import com.app.entities.Customer;
 import com.app.entities.Distributor;
 import com.app.enums.Gender;
 import com.app.exceptions.ResourceNotFoundException;
@@ -56,15 +55,6 @@ public class DistributorController {
 				() -> new ResourceNotFoundException("Distributor", "id", id));
 	}
 
-	@GetMapping("/distributors/username/{username}")
-	@ApiOperation(value = "View distributor by username")
-	public Distributor getDistributorByUsername(
-			@PathVariable(value = "username") String username) {
-		return distributorRepository.findByUsername(username).orElseThrow(
-				() -> new ResourceNotFoundException("Distributor", "username",
-						username));
-	}
-
 	@GetMapping("/distributors/email/{email}")
 	@ApiOperation(value = "View distributor by email")
 	public Distributor getDistributorByEmail(
@@ -75,9 +65,9 @@ public class DistributorController {
 	}
 
 	@PostMapping("/distributors/login")
-	@ApiOperation(value = "Authenticate Distributor by username/email and password")
+	@ApiOperation(value = "Authenticate Distributor by email and password")
 	public Distributor authenticate(@Valid @RequestBody LoginDetails loginDetails) {
-		return (Distributor) distributorService.authenticateUser(loginDetails.getUsernameOrEmail(),
+		return (Distributor) distributorService.authenticateUser(loginDetails.getEmail(),
 				loginDetails.getPassword());
 	}
 

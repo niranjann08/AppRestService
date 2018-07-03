@@ -53,15 +53,6 @@ public class UserController {
 				() -> new ResourceNotFoundException("User", "id", userId));
 	}
 
-	@GetMapping("/users/username/{username}")
-	@ApiOperation(value = "View user by username")
-	public AppUser getUserByUsername(
-			@PathVariable(value = "username") String username) {
-		return userRepository.findByUsername(username).orElseThrow(
-				() -> new ResourceNotFoundException("User", "username",
-						username));
-	}
-
 	@GetMapping("/users/email/{email}")
 	@ApiOperation(value = "View user by email")
 	public AppUser getUserByEmail(@PathVariable(value = "email") String email) {
@@ -70,9 +61,9 @@ public class UserController {
 	}
 
 	@PostMapping("/users/login")
-	@ApiOperation(value = "Authenticate user by username/email and password")
+	@ApiOperation(value = "Authenticate user by email and password")
 	public AppUser authenticate(@Valid @RequestBody LoginDetails loginDetails) {
-		return userService.authenticateUser(loginDetails.getUsernameOrEmail(),
+		return userService.authenticateUser(loginDetails.getEmail(),
 				loginDetails.getPassword());
 	}
 

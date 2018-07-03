@@ -53,15 +53,6 @@ public class AdminController {
 				() -> new ResourceNotFoundException("Admin", "id", id));
 	}
 
-	@GetMapping("/admins/username/{username}")
-	@ApiOperation(value = "View admin by username")
-	public AppAdmin getAdminByUsername(
-			@PathVariable(value = "username") String username) {
-		return adminRepository.findByUsername(username).orElseThrow(
-				() -> new ResourceNotFoundException("Admin", "username",
-						username));
-	}
-
 	@GetMapping("/admins/email/{email}")
 	@ApiOperation(value = "View admin by email")
 	public AppAdmin getAdminByEmail(
@@ -73,9 +64,9 @@ public class AdminController {
 	}
 
 	@PostMapping("/admins/login")
-	@ApiOperation(value = "Authenticate Admin by username/email and password")
+	@ApiOperation(value = "Authenticate Admin by email and password")
 	public AppAdmin authenticate(@Valid @RequestBody LoginDetails loginDetails) {
-		return (AppAdmin) adminService.authenticateUser(loginDetails.getUsernameOrEmail(),
+		return (AppAdmin) adminService.authenticateUser(loginDetails.getEmail(),
 				loginDetails.getPassword());
 	}
 

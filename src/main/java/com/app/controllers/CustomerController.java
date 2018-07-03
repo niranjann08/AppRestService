@@ -54,15 +54,6 @@ public class CustomerController {
 				() -> new ResourceNotFoundException("Customer", "id", id));
 	}
 
-	@GetMapping("/customers/username/{username}")
-	@ApiOperation(value = "View customer by username")
-	public Customer getCustomerByUsername(
-			@PathVariable(value = "username") String username) {
-		return customerRepository.findByUsername(username).orElseThrow(
-				() -> new ResourceNotFoundException("Customer", "username",
-						username));
-	}
-
 	@GetMapping("/customers/email/{email}")
 	@ApiOperation(value = "View customer by email")
 	public Customer getCustomerByEmail(
@@ -74,9 +65,9 @@ public class CustomerController {
 	}
 
 	@PostMapping("/customers/login")
-	@ApiOperation(value = "Authenticate Customer by username/email and password")
+	@ApiOperation(value = "Authenticate Customer by email and password")
 	public Customer authenticate(@Valid @RequestBody LoginDetails loginDetails) {
-		return (Customer) customerService.authenticateUser(loginDetails.getUsernameOrEmail(),
+		return (Customer) customerService.authenticateUser(loginDetails.getEmail(),
 				loginDetails.getPassword());
 	}
 
