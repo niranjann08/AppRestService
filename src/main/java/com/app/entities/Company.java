@@ -12,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,7 +33,6 @@ public class Company implements Serializable {
 	private String name;
 
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-	@NotBlank
 	private Address address;
 
 	@Column
@@ -42,7 +40,6 @@ public class Company implements Serializable {
 	private String email;
 
 	@Column
-	@NotBlank
 	private String phoneNumber;
 
 	@Column
