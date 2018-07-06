@@ -33,6 +33,9 @@ public class UserService implements UserDetailsService {
 
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	
+	@Autowired
+	private OtpService notificationService;
 
 	@Lazy
 	@Autowired
