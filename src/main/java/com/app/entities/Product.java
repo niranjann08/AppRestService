@@ -11,7 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
-import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,22 +28,18 @@ public class Product implements Serializable {
 	@Column(unique = true, updatable = false, nullable = false)
 	private Long id;
 
-	@Column
-	@NotBlank
+	@Column(unique = true, nullable = false)
 	private String name;
 
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private Company company;
 
-	@Column
-	@NotBlank
+	@Column(nullable = false)
 	private Double price;
 
-	@Column
-	@NotBlank
+	@Column(nullable = false)
 	private String priceCurrency;
 
 	@Column
-	@NotBlank
 	private Double serviceCharge;
 }
