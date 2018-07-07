@@ -14,4 +14,6 @@ import com.app.entities.Payments;
 public interface PaymentsRepository extends JpaRepository<Payments, Long> {
 	@Query("select p from Payments p where p.user=:user and p.paymentStatus = 'PENDING'")
 	public List<Payments> findPendingPaymentsPerUser(@Param("user") AppUser user);
+	
+	public List<Payments> findByUser(AppUser user);
 }
