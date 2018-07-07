@@ -23,11 +23,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import com.app.enums.Gender;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Data
 @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class AppUser implements Serializable {
 
 	private static final long serialVersionUID = -2503943890839637841L;

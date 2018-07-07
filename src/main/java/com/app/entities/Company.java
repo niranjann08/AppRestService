@@ -16,9 +16,12 @@ import javax.validation.constraints.Email;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Data
 @NoArgsConstructor
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Company implements Serializable {
 
 	private static final long serialVersionUID = 8365075518662239753L;

@@ -21,11 +21,13 @@ import lombok.NoArgsConstructor;
 
 import com.app.enums.PaymentStatus;
 import com.app.enums.PaymentType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Payments implements Serializable {
 
 	private static final long serialVersionUID = -5816270220430187057L;
@@ -49,7 +51,7 @@ public class Payments implements Serializable {
 
 	@Column(nullable = false)
 	private Double outstandingAmount;
-	
+
 	@Column(nullable = false)
 	private Double paidAmount;
 
@@ -58,14 +60,14 @@ public class Payments implements Serializable {
 
 	@Column(nullable = false)
 	private Integer paymentMonth;
-	
+
 	@Column(nullable = false)
 	private Integer paymentYear;
-	
+
 	@Column
-	private LocalDate paidDate; 
-	
+	private LocalDate paidDate;
+
 	@Column
 	private String paymentId;
-	
+
 }

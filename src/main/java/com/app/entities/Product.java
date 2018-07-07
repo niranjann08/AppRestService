@@ -18,10 +18,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import com.app.enums.ProductType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @MappedSuperclass
 @Data
 @NoArgsConstructor
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Product implements Serializable {
 
 	private static final long serialVersionUID = -9160736086749960884L;
