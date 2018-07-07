@@ -18,7 +18,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,11 +39,9 @@ public class AppUser implements Serializable {
 	private Long id;
 
 	@Column(nullable = false)
-	@NotBlank
 	private String password;
 
 	@Column(nullable = false)
-	@NotBlank
 	private String firstName;
 
 	@Column
@@ -58,7 +55,6 @@ public class AppUser implements Serializable {
 	private String email;
 
 	@Column(nullable = false)
-	@NotBlank
 	private String phoneNumber;
 
 	@Column

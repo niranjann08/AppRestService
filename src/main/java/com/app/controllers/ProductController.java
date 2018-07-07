@@ -20,9 +20,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.entities.Company;
-import com.app.entities.Product;
+import com.app.entities.DateWiseRates;
+import com.app.entities.DayWiseRates;
+import com.app.entities.Milk;
+import com.app.entities.MonthWiseRates;
+import com.app.entities.NewsPaper;
+import com.app.enums.ProductType;
 import com.app.exceptions.ResourceNotFoundException;
-import com.app.repositories.ProductRepository;
+import com.app.repositories.MilkRepository;
+import com.app.repositories.NewsPaperRepository;
 
 @RestController
 @RequestMapping("/api")
@@ -30,39 +36,64 @@ import com.app.repositories.ProductRepository;
 public class ProductController {
 
 	@Autowired
-	private ProductRepository productRepository;
+	private NewsPaperRepository newsPaperRepository;
 
-	@GetMapping("/products")
-	@ApiOperation(value = "View all products")
-	public List<Product> getAllProducts() {
-		return productRepository.findAll();
+	@Autowired
+	private MilkRepository milkRepository;
+
+	@GetMapping("/products/newspapers")
+	@ApiOperation(value = "View all news papers")
+	public List<NewsPaper> getAllNewsPapers() {
+		return newsPaperRepository.findAll();
 	}
 
-	@GetMapping("/products/{id}")
-	@ApiOperation(value = "View product by id")
-	public Product getProductById(@PathVariable(value = "id") Long id) {
-		return productRepository.findById(id).orElseThrow(
-				() -> new ResourceNotFoundException("Product", "id", id));
+	@GetMapping("/products/milks")
+	@ApiOperation(value = "View all milks")
+	public List<Milk> getAllMilks() {
+		return milkRepository.findAll();
 	}
 
-	@PostMapping("/products")
-	@ApiOperation(value = "Create product")
-	public Product createProduct(@Valid @RequestBody Product product) {
-		return productRepository.save(product);
+	@GetMapping("/products/newspapers/{id}")
+	@ApiOperation(value = "View news paper by id")
+	public NewsPaper getNewsPaperById(@PathVariable(value = "id") Long id) {
+		return newsPaperRepository.findById(id).orElseThrow(
+				() -> new ResourceNotFoundException("NewsPaper", "id", id));
 	}
 
-	@PutMapping("/products/{id}")
-	@ApiOperation(value = "Update product by id")
-	public Product updateProduct(@PathVariable(value = "id") Long id,
-			@Valid @RequestBody Product productDetails) {
-		Product product = productRepository.findById(id).orElseThrow(
-				() -> new ResourceNotFoundException("Product", "id", id));
+	@GetMapping("/products/milks/{id}")
+	@ApiOperation(value = "View milk by id")
+	public Milk getMilkById(@PathVariable(value = "id") Long id) {
+		return milkRepository.findById(id).orElseThrow(
+				() -> new ResourceNotFoundException("Milk", "id", id));
+	}
+
+	@PostMapping("/products/newspapers")
+	@ApiOperation(value = "Create news paper")
+	public NewsPaper createNewsPaper(@Valid @RequestBody NewsPaper newsPaper) {
+		return newsPaperRepository.save(newsPaper);
+	}
+
+	@PostMapping("/products/milks")
+	@ApiOperation(value = "Create milk")
+	public Milk createMilk(@Valid @RequestBody Milk milk) {
+		return milkRepository.save(milk);
+	}
+
+	@PutMapping("/products/newspapers/{id}")
+	@ApiOperation(value = "Update news paper by id")
+	public NewsPaper updateNewspaper(@PathVariable(value = "id") Long id,
+			@Valid @RequestBody NewsPaper productDetails) {
+		NewsPaper product = newsPaperRepository.findById(id).orElseThrow(
+				() -> new ResourceNotFoundException("NewsPaper", "id", id));
 
 		String name = productDetails.getName();
-		String priceCurrency = productDetails.getPriceCurrency();
 		Company company = productDetails.getCompany();
-		Double price = productDetails.getPrice();
-		Double serviceCharge = productDetails.getServiceCharge();
+		String priceCurrency = productDetails.getPriceCurrency();
+		Double deliveryCharge = productDetails.getDeliveryCharge();
+		DayWiseRates dayWiseRates = productDetails.getDayWiseRates();
+		DateWiseRates dateWiseRates = productDetails.getDateWiseRates();
+		MonthWiseRates monthWiseRates = productDetails.getMonthWiseRates();
+		String language = productDetails.getLanguage();
 
 		if (!StringUtils.isEmpty(name)) {
 			product.setName(name);
@@ -72,28 +103,87 @@ public class ProductController {
 			product.setPriceCurrency(priceCurrency);
 		}
 
+		if (!StringUtils.isEmpty(language)) {
+			product.setLanguage(language);
+		}
+
 		if (company != null) {
 			product.setCompany(company);
 		}
 
-		if (price != null) {
-			product.setPrice(price);
+		if (deliveryCharge == null) {
+			product.setDeliveryCharge(0.0);
 		}
 
-		if (serviceCharge != null) {
-			product.setServiceCharge(serviceCharge);
-		}
+		product.setType(ProductType.NEWSPAPER);
+		product.setDayWiseRates(dayWiseRates);
+		product.setDateWiseRates(dateWiseRates);
+		product.setMonthWiseRates(monthWiseRates);
 
-		Product updatedProduct = productRepository.save(product);
+		NewsPaper updatedProduct = newsPaperRepository.save(product);
 		return updatedProduct;
 	}
 
-	@DeleteMapping("/products/{id}")
-	@ApiOperation(value = "Delete product by id")
-	public ResponseEntity<?> deleteProduct(@PathVariable(value = "id") Long id) {
-		Product product = productRepository.findById(id).orElseThrow(
-				() -> new ResourceNotFoundException("Product", "id", id));
-		productRepository.delete(product);
+	@PutMapping("/products/milks/{id}")
+	@ApiOperation(value = "Update milk by id")
+	public Milk updateMilk(@PathVariable(value = "id") Long id,
+			@Valid @RequestBody Milk productDetails) {
+		Milk product = milkRepository.findById(id).orElseThrow(
+				() -> new ResourceNotFoundException("Milk", "id", id));
+
+		String name = productDetails.getName();
+		Company company = productDetails.getCompany();
+		String priceCurrency = productDetails.getPriceCurrency();
+		Double deliveryCharge = productDetails.getDeliveryCharge();
+		DayWiseRates dayWiseRates = productDetails.getDayWiseRates();
+		DateWiseRates dateWiseRates = productDetails.getDateWiseRates();
+		MonthWiseRates monthWiseRates = productDetails.getMonthWiseRates();
+		String quantity = productDetails.getQuantity();
+
+		if (!StringUtils.isEmpty(name)) {
+			product.setName(name);
+		}
+
+		if (!StringUtils.isEmpty(priceCurrency)) {
+			product.setPriceCurrency(priceCurrency);
+		}
+
+		if (!StringUtils.isEmpty(quantity)) {
+			product.setQuantity(quantity);
+		}
+
+		if (company != null) {
+			product.setCompany(company);
+		}
+
+		if (deliveryCharge == null) {
+			product.setDeliveryCharge(0.0);
+		}
+
+		product.setType(ProductType.NEWSPAPER);
+		product.setDayWiseRates(dayWiseRates);
+		product.setDateWiseRates(dateWiseRates);
+		product.setMonthWiseRates(monthWiseRates);
+
+		Milk updatedProduct = milkRepository.save(product);
+		return updatedProduct;
+	}
+
+	@DeleteMapping("/products/newspapers/{id}")
+	@ApiOperation(value = "Delete news paper by id")
+	public ResponseEntity<?> deleteNewsPaper(@PathVariable(value = "id") Long id) {
+		NewsPaper newsPaper = newsPaperRepository.findById(id).orElseThrow(
+				() -> new ResourceNotFoundException("NewsPaper", "id", id));
+		newsPaperRepository.delete(newsPaper);
+		return ResponseEntity.ok().build();
+	}
+
+	@DeleteMapping("/products/milks/{id}")
+	@ApiOperation(value = "Delete milk by id")
+	public ResponseEntity<?> deleteMilk(@PathVariable(value = "id") Long id) {
+		Milk milk = milkRepository.findById(id).orElseThrow(
+				() -> new ResourceNotFoundException("Milk", "id", id));
+		milkRepository.delete(milk);
 		return ResponseEntity.ok().build();
 	}
 }

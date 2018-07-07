@@ -4,18 +4,22 @@ import java.io.Serializable;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
+import com.app.enums.ProductType;
+
+@MappedSuperclass
 @Data
 @NoArgsConstructor
 public class Product implements Serializable {
@@ -35,11 +39,21 @@ public class Product implements Serializable {
 	private Company company;
 
 	@Column(nullable = false)
-	private Double price;
+	@Enumerated(EnumType.STRING)
+	private ProductType type;
 
 	@Column(nullable = false)
 	private String priceCurrency;
 
-	@Column
-	private Double serviceCharge;
+	@Column(nullable = false)
+	private Double deliveryCharge;
+
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private DayWiseRates dayWiseRates;
+
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private DateWiseRates dateWiseRates;
+
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private MonthWiseRates monthWiseRates;
 }

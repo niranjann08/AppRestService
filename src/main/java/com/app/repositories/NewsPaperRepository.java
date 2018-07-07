@@ -3,9 +3,9 @@ package com.app.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.app.entities.Product;
+import com.app.entities.NewsPaper;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface NewsPaperRepository extends JpaRepository<NewsPaper, Long> {
 
 }
