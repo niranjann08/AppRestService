@@ -45,10 +45,16 @@ public class Product implements Serializable {
 	private ProductType type;
 
 	@Column(nullable = false)
-	private String priceCurrency;
+	private String priceCurrency = "Rupee";
 
 	@Column(nullable = false)
-	private Double deliveryCharge;
+	private Double deliveryCharge = 0.0;
+	
+	@Column(nullable = false)
+	private Double serviceCharge = 0.0;
+	
+	@Column(nullable = false)
+	private Double discount = 0.0;
 
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private DayWiseRates dayWiseRates;
