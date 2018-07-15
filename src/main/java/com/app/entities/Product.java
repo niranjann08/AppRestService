@@ -1,16 +1,21 @@
 package com.app.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 
@@ -20,9 +25,10 @@ import lombok.NoArgsConstructor;
 import com.app.enums.ProductType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@MappedSuperclass
+@Entity
 @Data
 @NoArgsConstructor
+@Inheritance(strategy = InheritanceType.JOINED)
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Product implements Serializable {
 
@@ -37,8 +43,8 @@ public class Product implements Serializable {
 	@Column(unique = true, nullable = false)
 	private String name;
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-	private Company company;
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<Distributor> distributors = new ArrayList<Distributor>();
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -49,10 +55,10 @@ public class Product implements Serializable {
 
 	@Column(nullable = false)
 	private Double deliveryCharge = 0.0;
-	
+
 	@Column(nullable = false)
 	private Double serviceCharge = 0.0;
-	
+
 	@Column(nullable = false)
 	private Double discount = 0.0;
 

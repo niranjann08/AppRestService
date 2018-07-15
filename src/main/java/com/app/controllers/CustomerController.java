@@ -25,6 +25,7 @@ import com.app.beans.LoginDetails;
 import com.app.entities.Address;
 import com.app.entities.BankAccountDetails;
 import com.app.entities.Customer;
+import com.app.entities.Subscription;
 import com.app.enums.Gender;
 import com.app.exceptions.ResourceNotFoundException;
 import com.app.repositories.CustomerRepository;
@@ -37,7 +38,7 @@ public class CustomerController {
 
 	@Autowired
 	private CustomerRepository customerRepository;
-	
+
 	@Autowired
 	private CustomerService customerService;
 
@@ -67,14 +68,43 @@ public class CustomerController {
 	@PostMapping("/customers/login")
 	@ApiOperation(value = "Authenticate Customer by email and password")
 	public Customer authenticate(@Valid @RequestBody LoginDetails loginDetails) {
-		return (Customer) customerService.authenticateUser(loginDetails.getEmail(),
-				loginDetails.getPassword());
+		return (Customer) customerService.authenticateUser(
+				loginDetails.getEmail(), loginDetails.getPassword());
 	}
 
 	@PostMapping("/customers/registration")
 	@ApiOperation(value = "Register a customer")
 	public Customer registerUser(@Valid @RequestBody Customer customer) {
 		return (Customer) customerService.createUser(customer);
+	}
+
+	@PutMapping("/customers/subscriptions/{customerId}")
+	@ApiOperation(value = "Add Subscription per customer. Pass customer id")
+	public ResponseEntity<?> addSubscription(
+			@PathVariable(value = "customerId") Long customerId,
+			@Valid @RequestBody Subscription subscription) {
+		boolean added = customerService.addSubscription(customerId,
+				subscription);
+		if (added) {
+			return ResponseEntity.ok().build();
+		} else {
+			return ResponseEntity.status(500).build();
+		}
+
+	}
+
+	@DeleteMapping("/customers/subscriptions/{customerId}")
+	@ApiOperation(value = "Delete Subscription per customer. Pass customer id")
+	public ResponseEntity<?> deleteSubscription(
+			@PathVariable(value = "customerId") Long customerId,
+			@Valid @RequestBody Subscription subscription) {
+		boolean removed = customerService.removeSubscription(customerId,
+				subscription);
+		if (removed) {
+			return ResponseEntity.ok().build();
+		} else {
+			return ResponseEntity.status(500).build();
+		}
 	}
 
 	@PutMapping("/customers/{id}")

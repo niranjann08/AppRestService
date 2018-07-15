@@ -14,12 +14,15 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-@PrimaryKeyJoinColumn(name = "newspaper")
+@PrimaryKeyJoinColumn(name = "magazine")
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
-public class NewsPaper extends Product {
+public class Magazine extends Product {
 
-	private static final long serialVersionUID = 6862770851301126319L;
-
+	private static final long serialVersionUID = 8594130468171145076L;
+	
 	@Column(nullable = false)
 	private String language;
+	
+	@Column
+	private Integer scheduleInDays;
 }

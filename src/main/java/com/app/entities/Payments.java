@@ -56,7 +56,7 @@ public class Payments implements Serializable {
 	private Double paidAmount;
 
 	@Column(nullable = false)
-	private String payableCurrency;
+	private String payableCurrency = "Rupee";
 
 	@Column(nullable = false)
 	private Integer paymentMonth;

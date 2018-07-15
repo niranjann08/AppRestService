@@ -2,6 +2,7 @@ package com.app.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.PrimaryKeyJoinColumn;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
+@PrimaryKeyJoinColumn(name = "milk")
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Milk extends Product {
 
