@@ -3,7 +3,6 @@ package com.app.controllers;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -45,6 +44,7 @@ import com.app.repositories.MilkRepository;
 import com.app.repositories.NewsPaperRepository;
 import com.app.repositories.NovelRepository;
 import com.app.repositories.OtherProductsRepository;
+import com.app.repositories.ProductBaseRepository;
 import com.app.repositories.TextBookRepository;
 
 @RestController
@@ -73,24 +73,13 @@ public class ProductController {
 	@Autowired
 	private OtherProductsRepository otherProductsRepository;
 
-	@GetMapping("/products")
-	@ApiOperation(value = "View all products")
-	public List<? extends Product> getAllProducts() {
-		List<Product> products = new ArrayList<Product>();
-		products.addAll(comicRepository.findAll());
-		products.addAll(magazineRepository.findAll());
-		products.addAll(newsPaperRepository.findAll());
-		products.addAll(novelRepository.findAll());
-		products.addAll(textBookRepository.findAll());
-		products.addAll(milkRepository.findAll());
-		products.addAll(otherProductsRepository.findAll());
-		return products;
-	}
+	@Autowired
+	private ProductBaseRepository<Product> productBaseRepository;
 
-	@GetMapping("/products/{productType}")
-	@ApiOperation(value = "View all products by productType")
+	@GetMapping("/products")
+	@ApiOperation(value = "View products by type")
 	public List<? extends Product> getAllByProductType(
-			@PathVariable(value = "productType") ProductType productType) {
+			@RequestParam(value = "type") ProductType productType) {
 		switch (productType) {
 		case COMIC:
 			return comicRepository.findAll();
@@ -106,15 +95,17 @@ public class ProductController {
 			return textBookRepository.findAll();
 		case OTHERS:
 			return otherProductsRepository.findAll();
+		case ALL:
+			return productBaseRepository.findAll();
 		default:
 			throw new UnsupportedProductException();
 		}
 	}
 
-	@GetMapping("/products/{productType}/{id}")
+	@GetMapping("/products/{id}")
 	@ApiOperation(value = "View product by productType and id")
 	public Product getProductById(
-			@PathVariable(value = "productType") ProductType productType,
+			@RequestParam(value = "type") ProductType productType,
 			@PathVariable(value = "id") Long id) {
 		switch (productType) {
 		case COMIC:
@@ -146,13 +137,12 @@ public class ProductController {
 
 	@PostMapping("/products/")
 	@ApiOperation(value = "Create multiple products")
-	public void createProducts(
-			@RequestParam(value = "type") ProductType productType,
+	public void createMultipleProducts(
 			@Valid @RequestBody ProductWrapper products) {
-		saveProducts(productType, products);
+		saveProducts(products);
 	}
 
-	private void saveProducts(ProductType productType, ProductWrapper products) {
+	private void saveProducts(ProductWrapper products) {
 
 		Set<Comic> comics = products.getComics();
 		if (!CollectionUtils.isEmpty(comics)) {
@@ -190,14 +180,12 @@ public class ProductController {
 		}
 	}
 
-	@PutMapping("/products/{productType}/{id}")
+	@PutMapping("/products/{id}")
 	@ApiOperation(value = "Update product by productType and id")
 	public Product updateProduct(
-			@PathVariable(value = "productType") ProductType productType,
+			@RequestParam(value = "type") ProductType productType,
 			@PathVariable(value = "id") Long id,
 			@Valid @RequestBody Product productDetails) {
-
-		Product product = null;
 
 		switch (productType) {
 		case COMIC:
@@ -208,30 +196,30 @@ public class ProductController {
 			comic.setLanguage(comicDetails.getLanguage());
 			comic.setPublications(comicDetails.getPublications());
 			comic.setPublishedOn(comicDetails.getPublishedOn());
-			product = comic;
-			break;
+			setProductProps(productType, productDetails, comic);
+			return comicRepository.save(comic);
 		case MAGAZINE:
 			Magazine magazine = magazineRepository.findById(id).orElseThrow(
 					() -> new ResourceNotFoundException("Magazine", "id", id));
 			Magazine magazineDetails = (Magazine) productDetails;
 			magazine.setLanguage(magazineDetails.getLanguage());
 			magazine.setScheduleInDays(magazineDetails.getScheduleInDays());
-			product = magazine;
-			break;
+			setProductProps(productType, productDetails, magazine);
+			return magazineRepository.save(magazine);
 		case MILK:
 			Milk milk = milkRepository.findById(id).orElseThrow(
 					() -> new ResourceNotFoundException("Milk", "id", id));
 			Milk milkDetails = (Milk) productDetails;
 			milk.setQuantity(milkDetails.getQuantity());
-			product = milk;
-			break;
+			setProductProps(productType, productDetails, milk);
+			return milkRepository.save(milk);
 		case NEWSPAPER:
 			NewsPaper newsPaper = newsPaperRepository.findById(id).orElseThrow(
 					() -> new ResourceNotFoundException("NewsPaper", "id", id));
 			NewsPaper newsPaperDetails = (NewsPaper) productDetails;
 			newsPaper.setLanguage(newsPaperDetails.getLanguage());
-			product = newsPaper;
-			break;
+			setProductProps(productType, productDetails, newsPaper);
+			return newsPaperRepository.save(newsPaper);
 		case NOVEL:
 			Novel novel = novelRepository.findById(id).orElseThrow(
 					() -> new ResourceNotFoundException("Novel", "id", id));
@@ -241,8 +229,8 @@ public class ProductController {
 			novel.setPublications(novelDetails.getPublications());
 			novel.setPublishedOn(novelDetails.getPublishedOn());
 			novel.setGenre(novelDetails.getGenre());
-			product = novel;
-			break;
+			setProductProps(productType, productDetails, novel);
+			return novelRepository.save(novel);
 		case TEXTBOOK:
 			TextBook textBook = textBookRepository.findById(id).orElseThrow(
 					() -> new ResourceNotFoundException("TextBook", "id", id));
@@ -251,8 +239,8 @@ public class ProductController {
 			textBook.setAuthor(textBookDetails.getAuthor());
 			textBook.setPublications(textBookDetails.getPublications());
 			textBook.setPublishedOn(textBookDetails.getPublishedOn());
-			product = textBook;
-			break;
+			setProductProps(productType, productDetails, textBook);
+			return textBookRepository.save(textBook);
 		case OTHERS:
 			OtherProducts otherProducts = otherProductsRepository.findById(id)
 					.orElseThrow(
@@ -260,12 +248,15 @@ public class ProductController {
 									"OtherProducts", "id", id));
 			OtherProducts otherProductsDetails = (OtherProducts) productDetails;
 			otherProducts.setAttributes(otherProductsDetails.getAttributes());
-			product = otherProducts;
-			break;
+			setProductProps(productType, productDetails, otherProducts);
+			return otherProductsRepository.save(otherProducts);
 		default:
 			throw new UnsupportedProductException();
 		}
+	}
 
+	private void setProductProps(ProductType productType,
+			Product productDetails, Product product) {
 		String name = productDetails.getName();
 		List<Distributor> distributors = productDetails.getDistributors();
 		String priceCurrency = productDetails.getPriceCurrency();
@@ -294,14 +285,12 @@ public class ProductController {
 		product.setDayWiseRates(dayWiseRates);
 		product.setDateWiseRates(dateWiseRates);
 		product.setMonthWiseRates(monthWiseRates);
-
-		return null;//TODO- Implement
 	}
 
-	@DeleteMapping("/products/{productType}/{id}")
+	@DeleteMapping("/products/{id}")
 	@ApiOperation(value = "Delete product by productType and id")
 	public ResponseEntity<?> deleteProduct(
-			@PathVariable(value = "productType") ProductType productType,
+			@RequestParam(value = "type") ProductType productType,
 			@PathVariable(value = "id") Long id) {
 		switch (productType) {
 		case COMIC:

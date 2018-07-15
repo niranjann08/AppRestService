@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @PrimaryKeyJoinColumn(name = "distributor")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Distributor extends AppUser {
 
 	private static final long serialVersionUID = -6864605656807735649L;

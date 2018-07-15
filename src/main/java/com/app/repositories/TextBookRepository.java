@@ -1,11 +1,10 @@
 package com.app.repositories;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.app.entities.TextBook;
 
 @Repository
-public interface TextBookRepository extends JpaRepository<TextBook, Long> {
+public interface TextBookRepository extends ProductBaseRepository<TextBook> {
 
 }
