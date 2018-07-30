@@ -8,12 +8,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
-import javax.validation.constraints.NotBlank;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Data
@@ -30,25 +29,23 @@ public class Address implements Serializable {
 	private Long id;
 
 	@Column
-	@NotBlank
 	private String street1;
 
 	@Column
 	private String street2;
 
 	@Column
-	@NotBlank
 	private String city;
 
 	@Column
-	@NotBlank
 	private String state;
 
 	@Column
-	@NotBlank
 	private String zip;
 
 	@Column
-	@NotBlank
 	private String country;
+	
+	@Column
+	private String oneLineAddress;
 }
